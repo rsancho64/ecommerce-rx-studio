@@ -45,6 +45,10 @@ class Product(rx.Base):
     def sum_value(self):
         return self.quantity * self.unit_price
 
+    def __str__(self):
+        # return super.__str__()
+        return f"<{self.name},{self.quantity},{self.price},{self.created_at}>"
+
 
 class State(rx.State):
     """The app state."""
@@ -70,8 +74,12 @@ class State(rx.State):
             self.products = [Product(row) for row in data]
 
     def dump_products(self):
-        with open("product.json", mode="w") as product_file:
-            ic("fake serialization")
+        """fake serialization"""
+        print(type(State.products))
+            # print(p)
+        """serialization"""
+        # with open("product.json", mode="rw") as product_file:  ## RW !!! (not w)
+        #     ic("fake serialization")
 
     @rx.var
     def product_data(self) -> list[list]:
@@ -127,7 +135,7 @@ def inventory():
         data=State.product_data,
         pagination=True,
         sort=True,
-        # search=True,
+        search=True,
     )
     return rx.vstack(search_bar, table)
 
@@ -153,36 +161,46 @@ def filters():
     ...
     return rx.fragment()
 
-def save_items():
-    return rx.vstack(
+def dump_items():
+    respuesta = rx.vstack(
         rx.hstack(
-            # rx.icon(tag="add"),
-            rx.heading("Save all Products", size="md"),
+            rx.icon(tag="edit"),
+            # rx.heading("dump all products", size="md"),
             rx.spacer(),
-            width=FULL,
+            rx.button("dump products",on_click=State.dump_products()),
+            width=FULL,            
         ),
-        rx.form(
-            # rx.box(
-            #     rx.vstack(
-            #         field_input(State.input_name, "Product Name"),
-            #         field_input(State.input_qty, "Product Quantity"),
-            #         field_input(State.input_price, "Product price (in cents)"),
-            #         align="right",
-            #     ),
-            #     padding="15px",
-            #     border="black solid 1px",
-            # ),
-            rx.hstack(rx.spacer(), rx.button("Save Products", type_="submit")),
-            on_submit=State.add_product,
-            width=FULL,
-        ),
-        width=FULL,
+        rx.hstack(
+        ),         
+    #         rx.hstack(rx.spacer(), rx.button("dump products", type_="submit")),    
     )
+    return respuesta
+
+    # return rx.vstack(
+    #     rx.form(
+    #         rx.box(
+    #             rx.vstack(
+    #                 field_input(State.input_name, "Product Name"),
+    #                 field_input(State.input_qty, "Product Quantity"),
+    #                 field_input(State.input_price, "Product price (in cents)"),
+    #                 align="right",
+    #             ),
+    #             padding="15px",
+    #             border="black solid 1px",
+    #         ),
+    #         rx.hstack(rx.spacer(), rx.button("dump products", type_="submit")),
+    #         on_submit=State.dump_products, # on_submit=State.add_product,
+    #         width=FULL,
+    #     ),
+    #     width=FULL,
+    # )
+
+
 
 def add_item():
     return rx.vstack(
         rx.hstack(
-            # rx.icon(tag="add"),
+            rx.icon(tag="add"),
             rx.heading("Add a New Product", size="md"),
             rx.spacer(),
             width=FULL,
@@ -210,15 +228,10 @@ def index() -> rx.Component:
     return rx.center(
         rx.vstack(
             rx.heading("E-Commerce Inventory"),
-
             inventory(),
-
-            save_items(),
-            rx.spacer(),
-
+            dump_items(),
             add_item(),
             rx.spacer(),
-
             width=PAGE_WIDTH,
             height="70%",
         ),
