@@ -1,6 +1,6 @@
-.venv/
 *.db
 *.py[cod]
+.venv/
 .web
 __pycache__/
 reflex.db
