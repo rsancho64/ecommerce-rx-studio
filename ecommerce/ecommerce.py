@@ -153,11 +153,36 @@ def filters():
     ...
     return rx.fragment()
 
+def save_items():
+    return rx.vstack(
+        rx.hstack(
+            # rx.icon(tag="add"),
+            rx.heading("Save all Products", size="md"),
+            rx.spacer(),
+            width=FULL,
+        ),
+        rx.form(
+            # rx.box(
+            #     rx.vstack(
+            #         field_input(State.input_name, "Product Name"),
+            #         field_input(State.input_qty, "Product Quantity"),
+            #         field_input(State.input_price, "Product price (in cents)"),
+            #         align="right",
+            #     ),
+            #     padding="15px",
+            #     border="black solid 1px",
+            # ),
+            rx.hstack(rx.spacer(), rx.button("Save Products", type_="submit")),
+            on_submit=State.add_product,
+            width=FULL,
+        ),
+        width=FULL,
+    )
 
 def add_item():
     return rx.vstack(
         rx.hstack(
-            rx.icon(tag="add"),
+            # rx.icon(tag="add"),
             rx.heading("Add a New Product", size="md"),
             rx.spacer(),
             width=FULL,
@@ -185,9 +210,15 @@ def index() -> rx.Component:
     return rx.center(
         rx.vstack(
             rx.heading("E-Commerce Inventory"),
+
             inventory(),
+
+            save_items(),
+            rx.spacer(),
+
             add_item(),
             rx.spacer(),
+
             width=PAGE_WIDTH,
             height="70%",
         ),
