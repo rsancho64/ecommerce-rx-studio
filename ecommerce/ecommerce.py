@@ -74,12 +74,19 @@ class State(rx.State):
             self.products = [Product(row) for row in data]
 
     def dump_products(self):
-        """fake serialization"""
-        print(type(State.products))
-            # print(p)
         """serialization"""
-        # with open("product.json", mode="rw") as product_file:  ## RW !!! (not w)
-        #     ic("fake serialization")
+        #"""fake serialization"""
+        # print(type(State.products))
+        # print(State.products) # TypeError: Object of type BaseVar is not JSON serializable
+        # print(type(State.products[0]))
+        # print(type(self.product_data))  # @rx.var: computed: https://reflex.dev/docs/state/vars/#computed-vars
+        # print(self.product_data)
+        # print(json.dumps(self.product_data, indent=4, sort_keys=False)) # OK!:
+        # https://www.geeksforgeeks.org/serializing-json-data-in-python/
+        with open("products2.json", mode="w") as outFile:  # RW ? (not w?)
+            # ic("fake serialization") 
+            # print(json.dumps(self.product_data, indent=4, sort_keys=False))
+            json.dump(self.product_data, outFile)  # TODO: FIX: courly , NOT square brackets
 
     @rx.var
     def product_data(self) -> list[list]:
@@ -161,18 +168,19 @@ def filters():
     ...
     return rx.fragment()
 
+
 def dump_items():
     respuesta = rx.vstack(
         rx.hstack(
             rx.icon(tag="edit"),
             # rx.heading("dump all products", size="md"),
             rx.spacer(),
-            rx.button("dump products",on_click=State.dump_products()),
-            width=FULL,            
+            rx.button("dump products", on_click=State.dump_products()),
+            width=FULL,
         ),
         rx.hstack(
-        ),         
-    #         rx.hstack(rx.spacer(), rx.button("dump products", type_="submit")),    
+        ),
+        #         rx.hstack(rx.spacer(), rx.button("dump products", type_="submit")),
     )
     return respuesta
 
@@ -194,7 +202,6 @@ def dump_items():
     #     ),
     #     width=FULL,
     # )
-
 
 
 def add_item():
